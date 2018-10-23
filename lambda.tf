@@ -1,50 +1,65 @@
-resource "aws_lambda_function" "getActiveJobs" {
-
-  function_name = "getActiveJobs"
-  filename      = "lambda_function_payload.zip"
-  handler = "GetActiveJobs.handler"
-  runtime = "python3.6"
-  source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  role = "${aws_iam_role.lambda_exec.arn}"
-
+module "APIGateway" {
+  source = "./modules/api-gateway"
+  
 }
 
-resource "aws_lambda_function" "getAllJobs" {
+module "lambda1" {
 
-  function_name = "getAllJobs"
-  filename      = "lambda_function_payload.zip"
-  handler = "GetAllJobs.handler"
+  source = "./modules/lambda-deployment"
+
+  gateway_name = "jobAPI"
+  file_path = "lambda_function_payload.zip"
   runtime = "python3.6"
-  source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  role = "${aws_iam_role.lambda_exec.arn}"
-
+  name = "GetActiveJobs"
+  policy_name = "GetActiveJobs-policy" 
+  policy_filepath = "lambda-role.json"
+  HTTP_method = ""
+  region = "eu-west-1"
+  
 }
 
-resource "aws_lambda_function" "updateExistingJobs" {
+module "lambda2" {
 
-  function_name = "updateExistingJobs"
-  filename      = "lambda_function_payload.zip"
-  handler = "UpdateExistingJobs.handler"
+  source = "./modules/lambda-deployment"
+
+  gateway_name = "jobAPI"
+  file_path = "lambda_function_payload.zip"
   runtime = "python3.6"
-  source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  role = "${aws_iam_role.lambda_exec.arn}"
+  name = "GetAllJobs"
+  policy_name = "GetAllJobs-policy" 
+  policy_filepath = "lambda-role.json"
+  HTTP_method = ""
+  region = "eu-west-1"
 
+  
 }
 
-resource "aws_lambda_function" "postNewJob" {
+module "lambda3" {
 
-  function_name = "postNewJob"
-  filename      = "lambda_function_payload.zip"
-  handler = "PostNewJob.handler"
+  source = "./modules/lambda-deployment"
+
+  gateway_name = "jobAPI"
+  file_path = "lambda_function_payload.zip"
   runtime = "python3.6"
-  source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  role = "${aws_iam_role.lambda_exec.arn}"
-
+  name = "PostNewJob"
+  policy_name = "PostNewJob-policy" 
+  policy_filepath = "lambda-role.json"
+  HTTP_method = ""
+  region = "eu-west-1"
+  
 }
 
-resource "aws_iam_role" "lambda_exec" {
+module "lambda4" {
 
-  name = "Job-Bot-Lambda-Role"
-  assume_role_policy = "${file("lambda-role.json")}"
+  source = "./modules/lambda-deployment"
 
+  gateway_name = "jobAPI"
+  file_path = "lambda_function_payload.zip"
+  runtime = "python3.6"
+  name = "UpdateJob"
+  policy_name = "UpdateJob-policy" 
+  policy_filepath = "lambda-role.json"
+  HTTP_method = ""
+  region = "eu-west-1"
+  
 }
