@@ -30,69 +30,86 @@ variable "region" {
   description = "Region the resources will be raised in"
 }
 
-resource "aws_lambda_function" var.name {
+variable "id" {
+  description = "Account_ID of the user"
+}
+
+variable "root_resource_id" {
+
+}
+
+variable "rest_api_id" {
+  
+}
+
+resource "aws_lambda_function" "lambda" {
 
   function_name = "${var.name}"
   filename      = "${var.name}"
   handler = "${var.name}.handler"
   runtime = "${var.runtime}"
-  source_code_hash = "${base64sha256(file(file_path))}"
-  role = "${aws_iam_role.policy_name.arn}"
-
-  depends_on = ["aws_api_gateway_rest_api.jobAPI"]
+  source_code_hash = "${base64sha256(file(var.file_path))}"
+  role = "${aws_iam_role.lambda-policy.arn}"
 
 }
 
-resource "aws_iam_role" policy_name {
+resource "aws_iam_role" "lambda-policy" {
 
   name = "${var.policy_name}"
-  assume_role_policy = "${file("policy_filepath")}"
+  assume_role_policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Sid": "AllowAllForTesting",
+        "Effect": "Allow",
+        "Resource": "*"
+    }]
+}
+EOF
 
 }
 
-resource "aws_lambda_permission" "allow_api_gateway-${var.name}" {
+resource "aws_lambda_permission" "lambda-permission" {
 
-  function_name = "${aws_lambda_function}.${var.name}.${arn}"
+  function_name = "${aws_lambda_function.lambda.arn}"
   statement_id = "AllowExecutionFromApiGateway"
   action = "lambda:InvokeFunction"
   principal = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api}.${var.name}.${id}/*/${aws_api_gateway_method}.${var.name}.${http_method}${aws_api_gateway_resource}.${var.name}.${path}"
+  source_arn = "arn:aws:execute-api:${var.region}:${var.id}:${var.rest_api_id}/*/aws_api_gateway_method.${var.name}.${var.HTTP_method}${aws_api_gateway_resource.lambda-gateway-resource.path}"
 
 }
 
-resource "aws_api_gateway_resource" var.name {
+resource "aws_api_gateway_resource" "lambda-gateway-resource" {
 
-  rest_api_id = "${aws_api_gateway_rest_api.jobAPI.id}"
-  parent_id = "${aws_api_gateway_rest_api.jobAPI.root_resource_id}"
+  rest_api_id = "${var.rest_api_id}"
+  parent_id = "${var.root_resource_id}"
   path_part = "${var.name}"
 
 }
 
-resource "aws_api_gateway_method" var.name {
+resource "aws_api_gateway_method" "lambda-gateway-method" {
 
-  rest_api_id = "${aws_api_gateway_rest_api.gateway_name.id}"
-  resource_id = "${aws_api_gateway_resource}.${var.name}.${id}"
+  rest_api_id = "${var.rest_api_id}"
+  resource_id = "${aws_api_gateway_resource.lambda-gateway-resource.id}"
   http_method = "${var.HTTP_method}"
   authorization = "NONE"
 
 }
 
-resource "aws_api_gateway_integration" "${var.name}-integration" {
+resource "aws_api_gateway_integration" "lambda-gateway-integration" {
 
-  rest_api_id = "${aws_api_gateway_rest_api}.${var.gateway_name}.${id}"
-  resource_id = "${aws_api_gateway_resource}.${var.name}.${id}"
-  http_method = "${aws_api_gateway_method}.${var.name}.${http_method}"
+  rest_api_id = "${var.rest_api_id}"
+  resource_id = "${aws_api_gateway_resource.lambda-gateway-resource.id}"
+  http_method = "${aws_api_gateway_method.lambda-gateway-method.http_method}"
   type = "AWS_PROXY"
-  uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:${var.name}.${var.name}.${var.name}/invocations"
+  uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.region}:${var.id}:function:${var.name}.${var.name}.${var.name}/invocations"
   integration_http_method = "${var.HTTP_method}"
 
 }
 
-resource "aws_api_gateway_deployment" "${var.name}_deployment_dev" {
-  # depends_on = [
-  #   "aws_api_gateway_method.var.name",
-  #   "aws_api_gateway_integration.${var.name}-integration"
-  # ]
-  rest_api_id = "${aws_api_gateway_rest_api.jobAPI.id}"
+resource "aws_api_gateway_deployment" "lambda-gateway-deployment" {
+
+  rest_api_id = "${var.rest_api_id}"
   stage_name = "dev"
+
 }

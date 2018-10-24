@@ -23,5 +23,13 @@ resource "aws_api_gateway_method" "proxy" {
 }
 
 output "rest-api-name" {
-  value = "jobAPI"
+  value = "${aws_api_gateway_rest_api.jobAPI.name}"
+}
+
+output "rest_api_id" {
+  value = "${aws_api_gateway_rest_api.jobAPI.id}"
+}
+
+output "root_resource_id" {
+  value = "${aws_api_gateway_rest_api.jobAPI.root_resource_id}"
 }
