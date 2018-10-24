@@ -118,6 +118,7 @@ resource "aws_api_gateway_integration" "lambda-gateway-integration" {
 
 resource "aws_api_gateway_deployment" "lambda-gateway-deployment" {
 
+  depends_on = ["aws_api_gateway_integration.lambda-gateway-integration"]
   rest_api_id = "${var.rest_api_id}"
   stage_name = "dev"
 
