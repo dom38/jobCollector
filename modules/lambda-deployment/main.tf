@@ -57,13 +57,15 @@ resource "aws_iam_role" "lambda-policy" {
 
   name = "${var.policy_name}"
   assume_role_policy = <<EOF
-  {
+{
     "Version": "2012-10-17",
-    "Statement": [{
-      "Sid": "AllowAllForTesting",
-        "Effect": "Allow",
-        "Resource": "*"
-    }]
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
+        }
+    ]
 }
 EOF
 
