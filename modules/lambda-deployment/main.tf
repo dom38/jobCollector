@@ -45,7 +45,7 @@ variable "rest_api_id" {
 resource "aws_lambda_function" "lambda" {
 
   function_name = "${var.name}"
-  filename      = "${var.name}"
+  filename      = "${var.file_path}"
   handler = "${var.name}.handler"
   runtime = "${var.runtime}"
   source_code_hash = "${base64sha256(file(var.file_path))}"
@@ -56,18 +56,25 @@ resource "aws_lambda_function" "lambda" {
 resource "aws_iam_role" "lambda-policy" {
 
   name = "${var.policy_name}"
-  assume_role_policy = <<EOF
+  assume_role_policy = <<POLICY
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "*",
-            "Resource": "*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": [
+          "lambda.amazonaws.com",
+          "apigateway.amazonaws.com",
+          "dynamodb.amazonaws.com"
+        ]
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
 }
-EOF
+POLICY
 
 }
 

@@ -4,7 +4,7 @@ resource "aws_dynamodb_table" "job-table" {
   read_capacity = 8
   write_capacity = 8
   hash_key = "JobID"
-  range_key = "JobJSON"
+  range_key = "active"
 
   attribute {
 
