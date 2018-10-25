@@ -53,7 +53,7 @@ resource "aws_lambda_function" "lambda" {
 
 }
 
-resource "aws_iam_role" "lambda-policy" {
+resource "aws_iam_role" "lambda-role" {
 
   name = "${var.policy_name}"
   assume_role_policy = <<POLICY
@@ -75,7 +75,36 @@ resource "aws_iam_role" "lambda-policy" {
   ]
 }
 POLICY
+}
 
+resource "aws_iam_policy" "lambda-policy" {
+    name        = "${var.policy_name}"
+    description = "Policy to allow lambda to connect to dynamoDB"
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda-role-attachment" {
+    role       = "${aws_iam_role.lambda-role.name}"
+    policy_arn = "${aws_iam_policy.lambda-policy.arn}"
 }
 
 resource "aws_lambda_permission" "lambda-permission" {
