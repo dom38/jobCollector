@@ -49,7 +49,7 @@ resource "aws_lambda_function" "lambda" {
   handler = "${var.name}.handler"
   runtime = "${var.runtime}"
   source_code_hash = "${base64sha256(file(var.file_path))}"
-  role = "${aws_iam_role.lambda-policy.arn}"
+  role = "${aws_iam_role.lambda-role.arn}"
 
 }
 
