@@ -8,18 +8,18 @@ def handler (event, context):
 	table = dynamodb.Table('job-table')
 
 	table.put_item(
-		Item {
+		Item = {
 
-			'jobID' : uuid.uuid4()
-			'jobTitle' : event.get('jobTitle')
-			'jobDescription' : event.get('jobDescription')
-			'companyName' : event.get('companyName')
-			'location' : event.get('location')
-			'remote' : event.get('remote')
-			'salary' : event.get('salary')
-			'skillSet' : event.get('skillSet')
-			'recruiterEmail' : event.get('recruiterEmail')
-			'recruiterName' : event.get('recruiterName')
+			'jobID' : uuid.uuid4(),
+			'jobTitle' : event.get('jobTitle'),
+			'jobDescription' : event.get('jobDescription'),
+			'companyName' : event.get('companyName'),
+			'location' : event.get('location'),
+			'remote' : event.get('remote'),
+			'salary' : event.get('salary'),
+			'skillSet' : event.get('skillSet'),
+			'recruiterEmail' : event.get('recruiterEmail'),
+			'recruiterName' : event.get('recruiterName'),
 			'active' : 'Y'
 
 		})

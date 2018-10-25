@@ -1,7 +1,3 @@
-variable "gateway_name" {
-  description = "name of the gateway the lambda functions will be deployed on"  
-}
-
 variable "file_path" {
   description = "File path to a zip of the lambda function"  
 }
@@ -121,6 +117,7 @@ resource "aws_api_gateway_resource" "lambda-gateway-resource" {
 
   rest_api_id = "${var.rest_api_id}"
   parent_id = "${var.root_resource_id}"
+  # path_part = "${var.name}"
   path_part = "${var.name}"
 
 }
@@ -136,6 +133,7 @@ resource "aws_api_gateway_method" "lambda-gateway-method" {
 
 resource "aws_api_gateway_integration" "lambda-gateway-integration" {
 
+  depends_on = ["aws_api_gateway_method.lambda-gateway-method"]
   rest_api_id = "${var.rest_api_id}"
   resource_id = "${aws_api_gateway_resource.lambda-gateway-resource.id}"
   http_method = "${aws_api_gateway_method.lambda-gateway-method.http_method}"
