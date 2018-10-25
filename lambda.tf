@@ -7,7 +7,6 @@ module "lambda1" {
 
   source = "./modules/lambda-deployment"
 
-  gateway_name = "${module.APIGateway.rest-api-name}"
   file_path = "${var.file_path}"
   runtime = "python3.6"
   name = "${var.name[0]}"
