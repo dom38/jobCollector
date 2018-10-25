@@ -6,12 +6,16 @@ def handler (event, context):
 	dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 	table = dynamodb.Table('job-table')
 
-	response = table.update(
+	response = table.update_item(
 		Key={
-			'JobID' : event.JobID
+			'jobID' : int(event.get('jobID'))
+
 		},
-		UpdateExpression="set active = N"
-		ReturnValues="UPDATED"
+		UpdateExpression="set active = :r",
+		ExpressionAttributeValues={
+        ':r': event.get('active')
+        
+    }
 		)
 
 	return response

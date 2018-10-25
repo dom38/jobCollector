@@ -1,16 +1,17 @@
 import boto3
 import json
 import uuid
+import time
 
 def handler (event, context):
 
 	dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 	table = dynamodb.Table('job-table')
 
-	table.put_item(
+	response = table.put_item(
 		Item = {
 
-			'jobID' : uuid.uuid4(),
+			'jobID' : int(round(time.time() * 1000)),
 			'jobTitle' : event.get('jobTitle'),
 			'jobDescription' : event.get('jobDescription'),
 			'companyName' : event.get('companyName'),
@@ -20,6 +21,8 @@ def handler (event, context):
 			'skillSet' : event.get('skillSet'),
 			'recruiterEmail' : event.get('recruiterEmail'),
 			'recruiterName' : event.get('recruiterName'),
-			'active' : 'Y'
+			'active' : event.get('active')
 
 		})
+	
+	return response
