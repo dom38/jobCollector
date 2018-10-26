@@ -21,5 +21,5 @@ def handler (event, context):
 
 	return {
     'statusCode': 200,
-    'body': str(response)
+    'body': json.dumps(response)
 }
