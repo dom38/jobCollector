@@ -7,4 +7,7 @@ def handler (event, context):
 	table = dynamodb.Table('job-table')
 	response = table.scan()
 
-	return response
+	return {
+    'statusCode': 200,
+    'body': json.dumps(response)
+}

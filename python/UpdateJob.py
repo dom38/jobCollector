@@ -5,17 +5,21 @@ def handler (event, context):
 
 	dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 	table = dynamodb.Table('job-table')
+	parsedJson = json.loads(event['body'])
 
 	response = table.update_item(
 		Key={
-			'jobID' : int(event.get('jobID'))
+			'jobID' : int(parsedJson.get('jobID'))
 
 		},
 		UpdateExpression="set active = :r",
 		ExpressionAttributeValues={
-        ':r': event.get('active')
+        ':r': parsedJson.get('active')
         
     }
 		)
 
-	return response
+	return {
+    'statusCode': 200,
+    'body': str(response)
+}

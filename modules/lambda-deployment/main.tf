@@ -105,7 +105,7 @@ resource "aws_iam_role_policy_attachment" "lambda-role-attachment" {
 
 resource "aws_lambda_permission" "lambda-permission" {
 
-  function_name = "${aws_lambda_function.lambda.arn}"
+  function_name = "${var.name}"
   statement_id = "AllowExecutionFromApiGateway"
   action = "lambda:InvokeFunction"
   principal = "apigateway.amazonaws.com"
@@ -138,7 +138,7 @@ resource "aws_api_gateway_integration" "lambda-gateway-integration" {
   resource_id = "${aws_api_gateway_resource.lambda-gateway-resource.id}"
   http_method = "${aws_api_gateway_method.lambda-gateway-method.http_method}"
   type = "AWS_PROXY"
-  uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.region}:${var.id}:function:${var.name}.${var.name}.${var.name}/invocations"
+  uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.region}:${var.id}:function:${var.name}/invocations"
   integration_http_method = "${var.HTTP_method}"
 
 }

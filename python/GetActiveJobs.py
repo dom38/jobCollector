@@ -11,4 +11,7 @@ def handler (event, context):
 		FilterExpression= filter
 		)
 
-	return response
+	return {
+    'statusCode': 200,
+    'body': json.dumps(response)
+} 
