@@ -38,6 +38,11 @@ variable "rest_api_id" {
   
 }
 
+variable "rest_api_arn" {
+  
+}
+
+
 resource "aws_lambda_function" "lambda" {
 
   function_name = "${var.name}"
@@ -109,7 +114,7 @@ resource "aws_lambda_permission" "lambda-permission" {
   statement_id = "AllowExecutionFromApiGateway"
   action = "lambda:InvokeFunction"
   principal = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:${var.region}:${var.id}:${var.rest_api_id}/*/aws_api_gateway_method.${var.name}.${var.HTTP_method}${aws_api_gateway_resource.lambda-gateway-resource.path}"
+  source_arn = "${var.rest_api_arn}/*/*/*"
 
 }
 
@@ -117,7 +122,6 @@ resource "aws_api_gateway_resource" "lambda-gateway-resource" {
 
   rest_api_id = "${var.rest_api_id}"
   parent_id = "${var.root_resource_id}"
-  # path_part = "${var.name}"
   path_part = "${var.name}"
 
 }
@@ -137,7 +141,7 @@ resource "aws_api_gateway_integration" "lambda-gateway-integration" {
   rest_api_id = "${var.rest_api_id}"
   resource_id = "${aws_api_gateway_resource.lambda-gateway-resource.id}"
   http_method = "${aws_api_gateway_method.lambda-gateway-method.http_method}"
-  type = "AWS_PROXY"
+  type = "AWS"
   uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.region}:${var.id}:function:${var.name}/invocations"
   integration_http_method = "${var.HTTP_method}"
 

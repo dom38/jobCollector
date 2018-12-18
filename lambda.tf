@@ -17,6 +17,7 @@ module "lambda1" {
   id = "${var.id}"
   rest_api_id = "${module.APIGateway.rest_api_id}"
   root_resource_id = "${module.APIGateway.root_resource_id}"
+  rest_api_arn = "${module.APIGateway.rest_api_arn}"
   
 }
 
@@ -34,6 +35,7 @@ module "lambda2" {
   id = "${var.id}"
   rest_api_id = "${module.APIGateway.rest_api_id}"
   root_resource_id = "${module.APIGateway.root_resource_id}"
+  rest_api_arn = "${module.APIGateway.rest_api_arn}"
 
   
 }
@@ -52,6 +54,7 @@ module "lambda3" {
   id = "${var.id}"
   rest_api_id = "${module.APIGateway.rest_api_id}"
   root_resource_id = "${module.APIGateway.root_resource_id}"
+  rest_api_arn = "${module.APIGateway.rest_api_arn}"
   
 }
 
@@ -69,5 +72,6 @@ module "lambda4" {
   id = "${var.id}"
   rest_api_id = "${module.APIGateway.rest_api_id}"
   root_resource_id = "${module.APIGateway.root_resource_id}"
+  rest_api_arn = "${module.APIGateway.rest_api_arn}"
   
 }
