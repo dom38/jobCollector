@@ -18,5 +18,12 @@ This example implementation is a website with a public a private entrypoint; the
 2. Navigate to the cloned repo
 3. Run `terraform init`
 4. Run `terraform apply \ -var-file="Path/to/keys.tfvars" \ -var-file="Path/to/variables.tfvars"`
-5. Say yes to installing crypto miners on your dolla
-6. Navigate to your public/private s3 buckts/index.html to see your new websites!
+5. Put your AWS account ID in the prompt
+5. Follow the outputted s3 link to the index
+
+# TODO
+
+* Fix the lambda/API Gateway permissioning issue 
+* Insert returned API endpoints into HTML pages
+* Jazz up the webpages and integrate all the lambda functions
+* Stop the 8 errors on deployment
